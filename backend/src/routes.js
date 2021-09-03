@@ -1,10 +1,11 @@
 const { Router } = require('express');
 
-const PersonalRepository = require('./app/repositories/PersonalRepository');
+const UserController = require('./app/controllers/UserController');
 
 const router = Router();
 
-router.get('/personais', (req, res) => { PersonalRepository.findAll(res); });
-router.post('/personais', (req, res) => { PersonalRepository.createPersonal(req, res); });
+router.get('/register', UserController.registerUser);
+router.get('/login', UserController.loginUser);
+
 
 module.exports = router;
