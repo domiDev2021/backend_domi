@@ -3,7 +3,8 @@ const {
   HOST, USER, DATABASE, PASSWORD,
 } = require('./configs');
 
-const connection = createPool({
+const connection = new createPool({
+  connectionLimit: 10,
   host: HOST,
   user: USER,
   password: PASSWORD,
