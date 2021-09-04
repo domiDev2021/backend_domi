@@ -5,3 +5,6 @@ CREATE TABLE domibase.users (
     createdAt DATETIME NOT NULL default now(),
     constraint user_unique UNIQUE (userId, userEmail)
 )
+
+ALTER TABLE domibase.personais
+ADD COLUMN createdAt DATETIME NOT NULL default now() AFTER pix

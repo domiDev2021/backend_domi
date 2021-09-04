@@ -1,6 +1,7 @@
-const { response } = require('express');
 const bycript = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const UserRepository = require('../repository/UserRepository');
+require('dotenv').config();
 
 class UserController {
   async registerUser(request, response) {
@@ -26,12 +27,15 @@ class UserController {
     }
 
     const passwordDb = await UserRepository.loginUser(userEmail);
-    console.log(passwordDb[0].userPassword);
+
     const passwordAndUserMatch = bycript.compareSync(userPassword, passwordDb[0].userPassword);
     if (!passwordAndUserMatch) {
       return response.status(400).json('Email or password incorrect');
     }
+    console.log(passwordDb[0].userId);
+    const token = jwt.sign({ _id: passwordDb[0].userId }, process.env.TOKEN_SECRET);
 
+    response.header('authorization-token', token);
     response.json('Usuario logado com sucesso');
   }
 }
