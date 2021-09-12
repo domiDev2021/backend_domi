@@ -19,5 +19,7 @@ router.get('/personal', PersonalController.listPersonais);
 router.post('/alunos', AlunoController.registerAluno);
 router.get('/alunos/:id', AlunoController.listByPersonalId);
 router.get('/alunos', AlunoController.listAlunos);
+router.put('/alunos', AlunoController.updateAlunos);
+router.delete('/alunos/:id', AlunoController.deleteAluno);
 
 module.exports = router;
