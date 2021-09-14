@@ -4,6 +4,7 @@ const UserController = require('./app/controllers/UserController');
 const AuthController = require('./app/controllers/AuthController');
 const PersonalController = require('./app/controllers/PersonalController');
 const AlunoController = require('./app/controllers/AlunoController');
+const LancamentoController = require('./app/controllers/LancamentoController');
 
 const router = Router();
 
@@ -21,5 +22,10 @@ router.get('/alunos/:id', AlunoController.listByPersonalId);
 router.get('/alunos', AlunoController.listAlunos);
 router.put('/alunos', AlunoController.updateAlunos);
 router.delete('/alunos/:id', AlunoController.deleteAluno);
+
+// Lançamentos
+router.post('/lancamento/aula', LancamentoController.lancaAula);
+router.post('/lancamento/pagamento', LancamentoController.lancaPagamento);
+router.post('/lancamento/extra', LancamentoController.lancaRendaExtra);
 
 module.exports = router;
