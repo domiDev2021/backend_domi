@@ -2,13 +2,14 @@ const { createPool } = require('mysql');
 const {
   HOST, USER, DATABASE, PASSWORD,
 } = require('./configs');
+require('dotenv').config();
 
 const connection = new createPool({
   connectionLimit: 10,
-  host: HOST,
-  user: USER,
-  password: PASSWORD,
-  database: DATABASE,
+  host: process.env.HOST,
+  user: process.env.USER,
+  password: process.env.PASSWORD,
+  database: process.env.DATABASE,
 });
 
 // connection.connect();
