@@ -1,7 +1,4 @@
 const { createPool } = require('mysql');
-const {
-  HOST, USER, DATABASE, PASSWORD,
-} = require('./configs');
 require('dotenv').config();
 
 const connection = new createPool({
