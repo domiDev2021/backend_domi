@@ -39,10 +39,31 @@ class AlunoController {
     response.json(result);
   }
 
+  async listByAlunoId(request, response) {
+    const { id } = request.params;
+    console.log(id);
+    const [{
+      plano, celular, aulas_feitas, aulas_pacote, valor_aula, status_pagamento, data_vencimento,
+    }] = await AlunoRepository.listByAlunoId(id);
+
+    response.json({
+      plano, celular, aulas_feitas, aulas_pacote, valor_aula, status_pagamento, data_vencimento,
+    });
+  }
+
   async listAlunos(request, response) {
     const result = await AlunoRepository.listAlunos();
 
     response.json(result);
+  }
+
+  async listAlunosTabela(request, response) {
+    const result = await AlunoRepository.listAlunosTabela();
+    const resultCorrect = result.map((objeto) => (
+      { ...objeto, faturamento: (objeto.aulas_feitas * objeto.valor_aula) }
+    ));
+
+    response.json(resultCorrect);
   }
 
   async updateAlunos(request, response) {
@@ -82,6 +103,17 @@ class AlunoController {
     await AlunoRepository.deleteAluno(id);
 
     response.sendStatus(204);
+  }
+
+  async telefonesAlunosByPagamento(request, response) {
+    const { bool } = request.params;
+    const [{
+      celular, data_vencimento, aulas_pacote, aulas_feitas,
+    }] = await AlunoRepository.listTelefoneByStatusPagamento(bool);
+
+    response.json({
+      celular, aulas_feitas, aulas_pacote, data_vencimento,
+    });
   }
 }
 

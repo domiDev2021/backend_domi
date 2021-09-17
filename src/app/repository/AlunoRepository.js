@@ -25,6 +25,18 @@ class AlunoRepository {
     });
   }
 
+  listAlunosTabela() {
+    const query = 'SELECT nome, plano, valor_aula, aulas_feitas, aulas_pacote, data_vencimento, status_pagamento FROM alunos';
+    return new Promise((resolve, reject) => {
+      db.query(query, (erro, resultado) => {
+        if (erro) {
+          return reject(erro);
+        }
+        return resolve(resultado);
+      });
+    });
+  }
+
   deleteAluno(id) {
     const query = 'DELETE FROM alunos WHERE id_aluno = ?';
     return new Promise((resolve, reject) => {
@@ -64,6 +76,54 @@ class AlunoRepository {
     const query = 'SELECT * FROM alunos WHERE id_personal = ?';
     return new Promise((resolve, reject) => {
       db.query(query, id, (erro, resultado) => {
+        if (erro) {
+          return reject(erro);
+        }
+        return resolve(resultado);
+      });
+    });
+  }
+
+  listByAlunoId(id) {
+    const query = 'SELECT * FROM alunos WHERE id_aluno = ?';
+    return new Promise((resolve, reject) => {
+      db.query(query, id, (erro, resultado) => {
+        if (erro) {
+          return reject(erro);
+        }
+        return resolve(resultado);
+      });
+    });
+  }
+
+  countPagamentoByPersonalId(bool) {
+    const query = 'SELECT COUNT(status_pagamento) FROM alunos WHERE status_pagamento = ?';
+    return new Promise((resolve, reject) => {
+      db.query(query, bool, (erro, resultado) => {
+        if (erro) {
+          return reject(erro);
+        }
+        return resolve(resultado);
+      });
+    });
+  }
+
+  countAlunosByPersonalId(id) {
+    const query = 'SELECT COUNT(*) FROM alunos WHERE id_personal = ?';
+    return new Promise((resolve, reject) => {
+      db.query(query, id, (erro, resultado) => {
+        if (erro) {
+          return reject(erro);
+        }
+        return resolve(resultado);
+      });
+    });
+  }
+
+  listTelefoneByStatusPagamento(bool) {
+    const query = 'SELECT * FROM alunos WHERE status_pagamento = ?';
+    return new Promise((resolve, reject) => {
+      db.query(query, bool, (erro, resultado) => {
         if (erro) {
           return reject(erro);
         }

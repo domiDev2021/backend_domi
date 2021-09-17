@@ -15,13 +15,18 @@ router.post('/login', UserController.loginUser);
 // Personal
 router.post('/personal', PersonalController.registerPersonal);
 router.get('/personal', PersonalController.listPersonais);
+router.get('/personal/:id', PersonalController.listPersonalById);
+router.post('/personal/:bool', PersonalController.dadosDoPersonalResumido);
 
 // Aluno
-router.post('/alunos', AlunoController.registerAluno);
 router.get('/alunos/:id', AlunoController.listByPersonalId);
+router.get('/alunos/aluno/:id', AlunoController.listByAlunoId);
 router.get('/alunos', AlunoController.listAlunos);
 router.put('/alunos', AlunoController.updateAlunos);
+router.get('/alunos/numero/:bool', AlunoController.telefonesAlunosByPagamento);
+router.post('/alunos', AlunoController.registerAluno);
 router.delete('/alunos/:id', AlunoController.deleteAluno);
+router.get('/tabela', AlunoController.listAlunosTabela);
 
 // Lançamentos
 router.post('/lancamento/aula', LancamentoController.lancaAula);

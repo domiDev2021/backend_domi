@@ -24,6 +24,18 @@ class PersonalRepository {
       });
     });
   }
+
+  listPersonaisById(id) {
+    const query = 'SELECT * FROM personais WHERE id_personal = ?';
+    return new Promise((resolve, reject) => {
+      db.query(query, id, (erro, resultado) => {
+        if (erro) {
+          return reject(erro);
+        }
+        return resolve(resultado);
+      });
+    });
+  }
 }
 
 module.exports = new PersonalRepository();
