@@ -30,30 +30,40 @@ class PersonalController {
   }
 
   async dadosDoPersonalResumido(request, response) {
-    const { bool, id_personais } = request.body;
-    const [alunosDevendo] = await AlunoRepository.countPagamentoByPersonalId(bool);
-    const quantidadeAlunosDevendo = Object.values(alunosDevendo)[0];
+    const { bool } = request.params;
 
-    const [alunos] = await AlunoRepository.countAlunosByPersonalId(id_personais);
-    const quantidadeAlunos = Object.values(alunos)[0];
+    const alunosDevendo = await AlunoRepository.listAlunosDevendo(bool);
 
-    const [dicionarioFaturamento] = await LancamentoRepository.faturamentoAula(id_personais);
-    const faturamentoAula = Object.values(dicionarioFaturamento)[0];
+    const personais = new Object();
+    const infoAlunosDevendo = await Promise.all(alunosDevendo.map(async (objeto) => {
+      const [alunosDevendoByPersonalId] = await AlunoRepository.contaNumeroDeAlunosDevendoByPersonalId(objeto.id_personal);
+      const numeroDeAlunosDevendoByPersonalId = Object.values(alunosDevendoByPersonalId)[0];
+      const [quantidadeAlunosByPersonalId] = await AlunoRepository.countAlunosByPersonalId(objeto.id_personal);
+      const numeroTotalDeAlunosByPersonalId = Object.values(quantidadeAlunosByPersonalId)[0];
 
-    const [dicionarioFaturamentoExtra] = await LancamentoRepository.faturamentoExtra(id_personais);
-    const faturamentoExtra = Object.values(dicionarioFaturamentoExtra)[0];
+      const [dicionarioFaturamento] = await LancamentoRepository.faturamentoAula(objeto.id_personal);
+      const faturamentoAula = Object.values(dicionarioFaturamento)[0];
 
-    const faturamento = faturamentoAula + faturamentoExtra;
+      const [dicionarioFaturamentoExtra] = await LancamentoRepository.faturamentoExtra(objeto.id_personal);
+      const faturamentoExtra = Object.values(dicionarioFaturamentoExtra)[0];
 
-    const [{ id_personal, nome }] = await PersonalRepository.listPersonaisById(id_personais);
+      const faturamento = faturamentoAula + faturamentoExtra;
+      const [personalDados] = await PersonalRepository.listPersonaisById(objeto.id_personal);
+      const nomePersonal = personalDados.nome;
+      const personalId = objeto.id_personal;
+      if (!(nomePersonal in Object.keys(personais))) {
+        personais[`${nomePersonal}`] = {
+          nomePersonal,
+          personalId,
+          numeroDeAlunosDevendoByPersonalId,
+          numeroTotalDeAlunosByPersonalId,
+          faturamento,
+        };
+        return personais;
+      }
+    }));
 
-    response.json({
-      id_personal,
-      nome,
-      quantidadeAlunosDevendo,
-      quantidadeAlunos,
-      faturamento,
-    });
+    response.json(Object.values(personais));
   }
 
   async listPersonalById(request, response) {
@@ -65,6 +75,42 @@ class PersonalController {
     response.json({
       nome, email, telefone, agencia, conta, codigo_banco, cpf, pix,
     });
+  }
+
+  async filtroMesFinanceiroPersonal(request, response) {
+    const { id } = request.params;
+
+    const [aulasFaturamentoAula] = await LancamentoRepository.faturamentoAula(id);
+    const [outrasReceitasExtra] = await LancamentoRepository.faturamentoExtra(id);
+
+    // console.log(aulasFaturamentoAula['SUM(valor)']);
+    // console.log(outrasReceitasExtra['SUM(valor)']);
+    const results = await LancamentoRepository.JoinLancamentoPersonal(id);
+    const chavesPermitidas = ['id_personal', 'valor_aula', 'quantidade'];
+
+    const resultFiltrado = results.map((result) => {
+      const keys = Object.keys(result);
+      const chavesFiltradas = keys.filter((key) => chavesPermitidas.includes(key));
+      const listReduce = chavesFiltradas.reduce((objeto, chave) => {
+        objeto[chave] = result[chave];
+        return objeto;
+      }, {});
+      return listReduce;
+    });
+
+    let aulasReceber = 0;
+    const x = resultFiltrado.map((objeto) => {
+      console.log(objeto);
+      aulasReceber += (objeto.quantidade * objeto.valor_aula);
+      console.log(aulasReceber);
+      return aulasReceber;
+    });
+
+    const aulasPagas = aulasFaturamentoAula['SUM(valor)'];
+    const outrasReceitas = outrasReceitasExtra['SUM(valor)'];
+    const entrega = { aulasPagas, outrasReceitas, aulasReceber };
+
+    response.json(entrega);
   }
 }
 

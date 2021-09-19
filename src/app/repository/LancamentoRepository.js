@@ -61,14 +61,14 @@ class LancamentoRepository {
     });
   }
 
-  JoinLancamentoAlunos() {
+  JoinLancamentoPersonal(id) {
     const query = `
     SELECT lancamentos_aulas.*, alunos.*
     FROM lancamentos_aulas
-    INNER JOIN alunos ON alunos.id_aluno = lancamentos_aulas.id_aluno
+    INNER JOIN alunos ON alunos.id_personal = ?
     `;
     return new Promise((resolve, reject) => {
-      db.query(query, (erro, resultado) => {
+      db.query(query, id, (erro, resultado) => {
         if (erro) {
           return reject(erro);
         }

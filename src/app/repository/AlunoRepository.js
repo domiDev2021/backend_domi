@@ -96,10 +96,10 @@ class AlunoRepository {
     });
   }
 
-  countPagamentoByPersonalId(bool) {
-    const query = 'SELECT COUNT(status_pagamento) FROM alunos WHERE status_pagamento = ?';
+  contaNumeroDeAlunosDevendoByPersonalId(id) {
+    const query = 'SELECT COUNT(*) FROM alunos WHERE status_pagamento = 0 AND id_personal = ?';
     return new Promise((resolve, reject) => {
-      db.query(query, bool, (erro, resultado) => {
+      db.query(query, id, (erro, resultado) => {
         if (erro) {
           return reject(erro);
         }
@@ -112,6 +112,18 @@ class AlunoRepository {
     const query = 'SELECT COUNT(*) FROM alunos WHERE id_personal = ?';
     return new Promise((resolve, reject) => {
       db.query(query, id, (erro, resultado) => {
+        if (erro) {
+          return reject(erro);
+        }
+        return resolve(resultado);
+      });
+    });
+  }
+
+  listAlunosDevendo(bool) {
+    const query = 'SELECT* FROM alunos WHERE status_pagamento = ?';
+    return new Promise((resolve, reject) => {
+      db.query(query, bool, (erro, resultado) => {
         if (erro) {
           return reject(erro);
         }
