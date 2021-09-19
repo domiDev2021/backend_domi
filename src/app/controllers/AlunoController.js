@@ -225,6 +225,12 @@ class AlunoController {
 
     response.json(listaFinal);
   }
+
+  async alunoTodos(request, response) {
+    const result = await AlunoRepository.alunosTodos();
+
+    response.json(result);
+  }
 }
 
 module.exports = new AlunoController();

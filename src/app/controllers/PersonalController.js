@@ -112,6 +112,11 @@ class PersonalController {
 
     response.json(entrega);
   }
+
+  async PersonalTodos(request, response) {
+    const result = await PersonalRepository.personalTodos();
+    response.json(result);
+  }
 }
 
 module.exports = new PersonalController();

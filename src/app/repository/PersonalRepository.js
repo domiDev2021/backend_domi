@@ -36,6 +36,18 @@ class PersonalRepository {
       });
     });
   }
+
+  personalTodos() {
+    const query = 'SELECT id_personal, nome FROM personais';
+    return new Promise((resolve, reject) => {
+      db.query(query, (erro, resultado) => {
+        if (erro) {
+          return reject(erro);
+        }
+        return resolve(resultado);
+      });
+    });
+  }
 }
 
 module.exports = new PersonalRepository();

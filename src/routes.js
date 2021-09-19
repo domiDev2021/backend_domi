@@ -36,4 +36,8 @@ router.post('/lancamento/aula', LancamentoController.lancaAula);
 router.post('/lancamento/pagamento', LancamentoController.lancaPagamento);
 router.post('/lancamento/extra', LancamentoController.lancaRendaExtra);
 
+// TODOS
+router.get('/todos/personal', PersonalController.PersonalTodos);
+router.get('/todos/alunos', AlunoController.alunoTodos);
+
 module.exports = router;

@@ -143,6 +143,18 @@ class AlunoRepository {
       });
     });
   }
+
+  alunosTodos() {
+    const query = 'SELECT id_aluno, nome FROM alunos';
+    return new Promise((resolve, reject) => {
+      db.query(query, (erro, resultado) => {
+        if (erro) {
+          return reject(erro);
+        }
+        return resolve(resultado);
+      });
+    });
+  }
 }
 
 module.exports = new AlunoRepository();
