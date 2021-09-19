@@ -1,6 +1,7 @@
 const PersonalRepository = require('../repository/PersonalRepository');
 const AlunoRepository = require('../repository/AlunoRepository');
 const LancamentoRepository = require('../repository/LancamentoRepository');
+const { alunoTodos } = require('./AlunoController');
 
 class PersonalController {
   async registerPersonal(request, response) {
@@ -30,27 +31,37 @@ class PersonalController {
   }
 
   async dadosDoPersonalResumido(request, response) {
-    const { bool } = request.params;
-
-    const alunosDevendo = await AlunoRepository.listAlunosDevendo(bool);
+    const alunosDevendo = await AlunoRepository.listAlunosDevendo();
 
     const personais = new Object();
     const infoAlunosDevendo = await Promise.all(alunosDevendo.map(async (objeto) => {
-      const [alunosDevendoByPersonalId] = await AlunoRepository.contaNumeroDeAlunosDevendoByPersonalId(objeto.id_personal);
+      const [alunosDevendoByPersonalId] = await AlunoRepository.contaNumeroDeAlunosDevendoByPersonalId(
+        objeto.id_personal,
+      );
       const numeroDeAlunosDevendoByPersonalId = Object.values(alunosDevendoByPersonalId)[0];
-      const [quantidadeAlunosByPersonalId] = await AlunoRepository.countAlunosByPersonalId(objeto.id_personal);
+
+      const [quantidadeAlunosByPersonalId] = await AlunoRepository.countAlunosByPersonalId(
+        objeto.id_personal,
+      );
       const numeroTotalDeAlunosByPersonalId = Object.values(quantidadeAlunosByPersonalId)[0];
 
-      const [dicionarioFaturamento] = await LancamentoRepository.faturamentoAula(objeto.id_personal);
+      const [dicionarioFaturamento] = await LancamentoRepository.faturamentoAula(
+        objeto.id_personal,
+      );
       const faturamentoAula = Object.values(dicionarioFaturamento)[0];
 
-      const [dicionarioFaturamentoExtra] = await LancamentoRepository.faturamentoExtra(objeto.id_personal);
+      const [dicionarioFaturamentoExtra] = await LancamentoRepository.faturamentoExtra(
+        objeto.id_personal,
+      );
       const faturamentoExtra = Object.values(dicionarioFaturamentoExtra)[0];
 
       const faturamento = faturamentoAula + faturamentoExtra;
+
       const [personalDados] = await PersonalRepository.listPersonaisById(objeto.id_personal);
+
       const nomePersonal = personalDados.nome;
       const personalId = objeto.id_personal;
+
       if (!(nomePersonal in Object.keys(personais))) {
         personais[`${nomePersonal}`] = {
           nomePersonal,
@@ -83,8 +94,6 @@ class PersonalController {
     const [aulasFaturamentoAula] = await LancamentoRepository.faturamentoAula(id);
     const [outrasReceitasExtra] = await LancamentoRepository.faturamentoExtra(id);
 
-    // console.log(aulasFaturamentoAula['SUM(valor)']);
-    // console.log(outrasReceitasExtra['SUM(valor)']);
     const results = await LancamentoRepository.JoinLancamentoPersonal(id);
     const chavesPermitidas = ['id_personal', 'valor_aula', 'quantidade'];
 
@@ -100,9 +109,8 @@ class PersonalController {
 
     let aulasReceber = 0;
     const x = resultFiltrado.map((objeto) => {
-      console.log(objeto);
       aulasReceber += (objeto.quantidade * objeto.valor_aula);
-      console.log(aulasReceber);
+
       return aulasReceber;
     });
 

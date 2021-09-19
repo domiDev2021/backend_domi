@@ -120,10 +120,10 @@ class AlunoRepository {
     });
   }
 
-  listAlunosDevendo(bool) {
-    const query = 'SELECT* FROM alunos WHERE status_pagamento = ?';
+  listAlunosDevendo() {
+    const query = 'SELECT * FROM alunos WHERE status_pagamento = 0';
     return new Promise((resolve, reject) => {
-      db.query(query, bool, (erro, resultado) => {
+      db.query(query, (erro, resultado) => {
         if (erro) {
           return reject(erro);
         }

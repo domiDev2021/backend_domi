@@ -35,7 +35,7 @@ class AlunoController {
 
   async listByPersonalId(request, response) {
     const { id } = request.params;
-    console.log(id);
+
     const result = await AlunoRepository.listByPersonalId(id);
 
     response.json(result);
@@ -43,7 +43,7 @@ class AlunoController {
 
   async listByAlunoId(request, response) {
     const { id } = request.params;
-    console.log(id);
+
     const [{
       plano, celular, aulas_feitas, aulas_pacote, valor_aula, status_pagamento, data_vencimento,
     }] = await AlunoRepository.listByAlunoId(id);
@@ -199,8 +199,7 @@ class AlunoController {
       const dia1 = `${anoCriado1}-${mesCriado1}-${diaCriado1}`;
       const dia2 = `${anoCriado2}-${mesCriado2}-${diaCriado2}`;
       const dia3 = `${anoCriado3}-${mesCriado3}-${diaCriado3}`;
-      // console.log(dia1);
-      // console.log(dataBanco);
+
       if (dataBanco === dia1 || dataBanco === dia2 || dataBanco === dia3) {
         const {
           id_aluno, id_personal, nome, plano, aulas_feitas, valor_aula,
