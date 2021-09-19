@@ -60,6 +60,22 @@ class LancamentoRepository {
       });
     });
   }
+
+  JoinLancamentoAlunos() {
+    const query = `
+    SELECT lancamentos_aulas.*, alunos.*
+    FROM lancamentos_aulas
+    INNER JOIN alunos ON alunos.id_aluno = lancamentos_aulas.id_aluno
+    `;
+    return new Promise((resolve, reject) => {
+      db.query(query, (erro, resultado) => {
+        if (erro) {
+          return reject(erro);
+        }
+        return resolve(resultado);
+      });
+    });
+  }
 }
 
 module.exports = new LancamentoRepository();

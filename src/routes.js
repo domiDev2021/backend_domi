@@ -27,6 +27,7 @@ router.get('/alunos/numero/:bool', AlunoController.telefonesAlunosByPagamento);
 router.post('/alunos', AlunoController.registerAluno);
 router.delete('/alunos/:id', AlunoController.deleteAluno);
 router.get('/tabela', AlunoController.listAlunosTabela);
+router.get('/mes', AlunoController.filtroPorMesAlunos);
 
 // Lançamentos
 router.post('/lancamento/aula', LancamentoController.lancaAula);

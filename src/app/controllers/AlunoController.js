@@ -1,4 +1,6 @@
 const AlunoRepository = require('../repository/AlunoRepository');
+const LancamentoRepository = require('../repository/LancamentoRepository');
+const PersonalRepository = require('../repository/PersonalRepository');
 
 class AlunoController {
   async registerAluno(request, response) {
@@ -108,12 +110,65 @@ class AlunoController {
   async telefonesAlunosByPagamento(request, response) {
     const { bool } = request.params;
     const [{
+      id_personal,
+      nome, plano,
       celular, data_vencimento, aulas_pacote, aulas_feitas,
     }] = await AlunoRepository.listTelefoneByStatusPagamento(bool);
 
+    const [result] = await PersonalRepository.listPersonaisById(id_personal);
+
+    const nomeDoPersonal = result.nome;
+    console.log(nomeDoPersonal);
     response.json({
-      celular, aulas_feitas, aulas_pacote, data_vencimento,
+      nomeDoPersonal,
+      nome,
+      plano,
+      celular,
+      aulas_feitas,
+      aulas_pacote,
+      data_vencimento,
     });
+  }
+
+  async filtroPorMesAlunos(request, response) {
+    const results = await LancamentoRepository.JoinLancamentoAlunos();
+    const chavesPermitidas = ['nome', 'aulas_feitas', 'valor_aula', 'data_inicial', 'quantidade'];
+    const resultFiltrado = results.map((result) => {
+      const keys = Object.keys(result);
+      const chavesFiltradas = keys.filter((key) => chavesPermitidas.includes(key));
+      const listReduce = chavesFiltradas.reduce((objeto, chave) => {
+        objeto[chave] = result[chave];
+        return objeto;
+      }, {});
+      return listReduce;
+    });
+
+    const dicionarioCompleto = resultFiltrado.map((objeto) => (
+      {
+        ...objeto,
+        faturamento: (objeto.valor_aula * objeto.quantidade),
+        dia: objeto.data_inicial.getDate(),
+      }
+    ));
+
+    const filtroAplicado = dicionarioCompleto.map((objeto) => {
+      let semana = 0;
+      if (objeto.dia <= 7) {
+        semana = 1;
+      } else if (objeto.dia > 7 && objeto.dia <= 15) {
+        semana = 2;
+      } else if (objeto.dia > 15 && objeto.dia <= 21) {
+        semana = 3;
+      } else if (objeto.dia > 21 && objeto.dia <= 27) {
+        semana = 4;
+      } else {
+        semana = 5;
+      }
+
+      return { ...objeto, semana };
+    });
+
+    response.json(filtroAplicado);
   }
 }
 
