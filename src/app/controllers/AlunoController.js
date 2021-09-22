@@ -122,11 +122,11 @@ class AlunoController {
 
     const resultFinal = await Promise.all(result.map(async (objeto) => {
       const [result2] = await PersonalRepository.personalTodos(objeto.id_personal);
-      console.log(result2);
+
       const nomeDoPersonal = result2.nome;
       return { ...objeto, nomeDoPersonal };
     }));
-    console.log(resultFinal);
+
     response.json(resultFinal);
   }
 
