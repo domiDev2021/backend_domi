@@ -132,10 +132,10 @@ class AlunoRepository {
     });
   }
 
-  listTelefoneByStatusPagamento(bool) {
-    const query = 'SELECT * FROM alunos WHERE status_pagamento = ?';
+  listTelefoneByStatusPagamento() {
+    const query = 'SELECT * FROM alunos WHERE status_pagamento = 0';
     return new Promise((resolve, reject) => {
-      db.query(query, bool, (erro, resultado) => {
+      db.query(query, (erro, resultado) => {
         if (erro) {
           return reject(erro);
         }

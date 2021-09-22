@@ -24,12 +24,12 @@ router.get('/alunos/:id', AlunoController.listByPersonalId);
 router.get('/alunos/aluno/:id', AlunoController.listByAlunoId);
 router.get('/alunos', AlunoController.listAlunos);
 router.put('/alunos', AlunoController.updateAlunos);
-router.get('/alunos/numero/:bool', AlunoController.telefonesAlunosByPagamento);
 router.post('/alunos', AlunoController.registerAluno);
 router.delete('/alunos/:id', AlunoController.deleteAluno);
 router.get('/tabela', AlunoController.listAlunosTabela);
 router.get('/mes/:id', AlunoController.filtroPorMesAlunos);
 router.get('/cobranca/:dia', AlunoController.autorizarCobranca);
+router.get('/atrasados', AlunoController.telefonesAlunosByPagamento);
 
 // Lançamentos
 router.post('/lancamento/aula', LancamentoController.lancaAula);

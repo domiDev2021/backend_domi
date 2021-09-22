@@ -108,18 +108,26 @@ class AlunoController {
   }
 
   async telefonesAlunosByPagamento(request, response) {
-    const { bool } = request.params;
-    const lista = await AlunoRepository.listTelefoneByStatusPagamento(bool);
+    const lista = await AlunoRepository.listTelefoneByStatusPagamento();
 
     const result = lista.map((objeto) => {
       const valorTotal = objeto.aulas_feitas * objeto.valor_aula;
-      const { celular, aulas_feitas, data_vencimento } = objeto;
+      const {
+        nome, celular, aulas_feitas, data_vencimento, plano, id_personal,
+      } = objeto;
       return {
-        celular, aulas_feitas, data_vencimento, valorTotal,
+        nome, celular, aulas_feitas, data_vencimento, valorTotal, plano, id_personal,
       };
     });
 
-    response.json(result);
+    const resultFinal = await Promise.all(result.map(async (objeto) => {
+      const [result2] = await PersonalRepository.personalTodos(objeto.id_personal);
+      console.log(result2);
+      const nomeDoPersonal = result2.nome;
+      return { ...objeto, nomeDoPersonal };
+    }));
+    console.log(resultFinal);
+    response.json(resultFinal);
   }
 
   async filtroPorMesAlunos(request, response) {
