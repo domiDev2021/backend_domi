@@ -155,6 +155,18 @@ class AlunoRepository {
       });
     });
   }
+
+  updateAulasAluno(aula) {
+    const query = 'UPDATE alunos SET aulas_feitas = aulas_feitas + ? WHERE id_aluno = ?';
+    return new Promise((resolve, reject) => {
+      db.query(query, aula, (erro, resultado) => {
+        if (erro) {
+          return reject(erro);
+        }
+        return resolve(resultado);
+      });
+    });
+  }
 }
 
 module.exports = new AlunoRepository();

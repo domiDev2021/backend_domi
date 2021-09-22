@@ -1,3 +1,4 @@
+const AlunoRepository = require('../repository/AlunoRepository');
 const LancamentoRepository = require('../repository/LancamentoRepository');
 
 class LancamentoController {
@@ -9,6 +10,8 @@ class LancamentoController {
     const result = await LancamentoRepository.lancaAula({
       id_personal, id_aluno, data_inicial, data_final, quantidade,
     });
+
+    const atualizaAulaAluno = await AlunoRepository.updateAulasAluno([quantidade, id_aluno]);
 
     response.json(result);
   }
