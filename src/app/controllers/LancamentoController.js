@@ -30,11 +30,11 @@ class LancamentoController {
 
   async lancaRendaExtra(request, response) {
     const {
-      id_personal, valor, descricao, data,
+      id_personal, valor, descricao, quantidade,
     } = request.body;
 
     const result = await LancamentoRepository.lancaRendaExtra({
-      id_personal, valor, descricao, data,
+      id_personal, valor, descricao, quantidade,
     });
 
     response.json(result);
