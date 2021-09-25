@@ -167,6 +167,18 @@ class AlunoRepository {
       });
     });
   }
+
+  comprovantes() {
+    const query = 'SELECT * FROM alunos WHERE status_pagamento = 1';
+    return new Promise((resolve, reject) => {
+      db.query(query, (erro, resultado) => {
+        if (erro) {
+          return reject(erro);
+        }
+        return resolve(resultado);
+      });
+    });
+  }
 }
 
 module.exports = new AlunoRepository();

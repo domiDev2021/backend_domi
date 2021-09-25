@@ -238,6 +238,20 @@ class AlunoController {
 
     response.json(result);
   }
+
+  async comprovantes(request, response) {
+    const alunosPagos = await AlunoRepository.comprovantes();
+    console.log(alunosPagos);
+
+    const infoDePagamento = await Promise.all(alunosPagos.map(async (objeto) => {
+      const { nome, celular, id_personal } = objeto;
+      const [resultado] = await PersonalRepository.listPersonaisById(id_personal);
+      const nomeDoPersonal = resultado.nome;
+      return { nomeDoPersonal, nome, celular };
+    }));
+
+    response.json(infoDePagamento);
+  }
 }
 
 module.exports = new AlunoController();

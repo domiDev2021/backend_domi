@@ -30,6 +30,7 @@ router.get('/tabela', AlunoController.listAlunosTabela);
 router.get('/mes/:id', AlunoController.filtroPorMesAlunos);
 router.get('/cobranca/:dia', AlunoController.autorizarCobranca);
 router.get('/atrasados', AlunoController.telefonesAlunosByPagamento);
+router.get('/comprovantes', AlunoController.comprovantes);
 
 // Lançamentos
 router.post('/lancamento/aula', LancamentoController.lancaAula);
