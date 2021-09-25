@@ -241,7 +241,6 @@ class AlunoController {
 
   async comprovantes(request, response) {
     const alunosPagos = await AlunoRepository.comprovantes();
-    console.log(alunosPagos);
 
     const infoDePagamento = await Promise.all(alunosPagos.map(async (objeto) => {
       const { nome, celular, id_personal } = objeto;
