@@ -18,11 +18,11 @@ class LancamentoController {
 
   async lancaPagamento(request, response) {
     const {
-      id_personal, id_aluno, quantidade, valor, data,
+      id_personal, id_aluno, quantidade, valor,
     } = request.body;
 
     const result = await LancamentoRepository.lancaPagamento({
-      id_personal, id_aluno, quantidade, valor, data,
+      id_personal, id_aluno, quantidade, valor,
     });
 
     response.json(result);
