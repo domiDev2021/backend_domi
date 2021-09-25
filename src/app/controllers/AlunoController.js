@@ -2,10 +2,8 @@ const AlunoRepository = require('../repository/AlunoRepository');
 const LancamentoRepository = require('../repository/LancamentoRepository');
 const PersonalRepository = require('../repository/PersonalRepository');
 
-class AlunoController
-{
-  async registerAluno(request, response)
-  {
+class AlunoController {
+  async registerAluno(request, response) {
     const {
       id_personal,
       nome,
@@ -35,8 +33,7 @@ class AlunoController
     response.json(result);
   }
 
-  async listByPersonalId(request, response)
-  {
+  async listByPersonalId(request, response) {
     const { id } = request.params;
 
     const result = await AlunoRepository.listByPersonalId(id);
@@ -44,8 +41,7 @@ class AlunoController
     response.json(result);
   }
 
-  async listByAlunoId(request, response)
-  {
+  async listByAlunoId(request, response) {
     const { id } = request.params;
 
     const [{
@@ -57,15 +53,13 @@ class AlunoController
     });
   }
 
-  async listAlunos(request, response)
-  {
+  async listAlunos(request, response) {
     const result = await AlunoRepository.listAlunos();
 
     response.json(result);
   }
 
-  async listAlunosTabela(request, response)
-  {
+  async listAlunosTabela(request, response) {
     const result = await AlunoRepository.listAlunosTabela();
     const resultCorrect = result.map((objeto) => (
       { ...objeto, faturamento: (objeto.aulas_feitas * objeto.valor_aula) }
@@ -74,8 +68,7 @@ class AlunoController
     response.json(resultCorrect);
   }
 
-  async updateAlunos(request, response)
-  {
+  async updateAlunos(request, response) {
     const {
       id_personal,
       id_aluno,
@@ -106,8 +99,7 @@ class AlunoController
     response.json(result);
   }
 
-  async deleteAluno(request, response)
-  {
+  async deleteAluno(request, response) {
     const { id } = request.params;
 
     await AlunoRepository.deleteAluno(id);
@@ -115,12 +107,10 @@ class AlunoController
     response.sendStatus(204);
   }
 
-  async telefonesAlunosByPagamento(request, response)
-  {
+  async telefonesAlunosByPagamento(request, response) {
     const lista = await AlunoRepository.listTelefoneByStatusPagamento();
 
-    const result = lista.map((objeto) =>
-    {
+    const result = lista.map((objeto) => {
       const valorTotal = objeto.aulas_feitas * objeto.valor_aula;
       const {
         nome, celular, aulas_feitas, data_vencimento, plano, id_personal,
@@ -130,8 +120,7 @@ class AlunoController
       };
     });
 
-    const resultFinal = await Promise.all(result.map(async (objeto) =>
-    {
+    const resultFinal = await Promise.all(result.map(async (objeto) => {
       const [result2] = await PersonalRepository.listPersonaisById(objeto.id_personal);
 
       const nomeDoPersonal = result2.nome;
@@ -141,17 +130,14 @@ class AlunoController
     response.json(resultFinal);
   }
 
-  async filtroPorMesAlunos(request, response)
-  {
+  async filtroPorMesAlunos(request, response) {
     const { id } = request.params;
     const results = await LancamentoRepository.JoinLancamentoPersonal(id);
     const chavesPermitidas = ['nome', 'aulas_feitas', 'valor_aula', 'data_inicial', 'quantidade'];
-    const resultFiltrado = results.map((result) =>
-    {
+    const resultFiltrado = results.map((result) => {
       const keys = Object.keys(result);
       const chavesFiltradas = keys.filter((key) => chavesPermitidas.includes(key));
-      const listReduce = chavesFiltradas.reduce((objeto, chave) =>
-      {
+      const listReduce = chavesFiltradas.reduce((objeto, chave) => {
         objeto[chave] = result[chave];
         return objeto;
       }, {});
@@ -166,8 +152,7 @@ class AlunoController
       }
     ));
 
-    const filtroAplicado = dicionarioCompleto.map((objeto) =>
-    {
+    const filtroAplicado = dicionarioCompleto.map((objeto) => {
       let semana = 0;
       if (objeto.dia <= 7) {
         semana = 1;
@@ -187,8 +172,7 @@ class AlunoController
     response.json(filtroAplicado);
   }
 
-  async autorizarCobranca(request, response)
-  {
+  async autorizarCobranca(request, response) {
     const { dia } = request.params;
 
     const result = await AlunoRepository.listAlunos();
@@ -214,8 +198,7 @@ class AlunoController
     const mesCriado3 = filtroData[2].getMonth();
     const anoCriado3 = filtroData[2].getFullYear();
     const lista = [];
-    const filtrado = result.map((value) =>
-    {
+    const filtrado = result.map((value) => {
       const diaBanco = value.data_vencimento.getDate();
       const mesBanco = value.data_vencimento.getMonth() + 1;
       const anoBanco = value.data_vencimento.getFullYear();
@@ -238,8 +221,7 @@ class AlunoController
       return lista;
     });
     const listaFinal = [];
-    const final = await Promise.all(filtrado[0].map(async (objeto) =>
-    {
+    const final = await Promise.all(filtrado[0].map(async (objeto) => {
       const [resultado] = await PersonalRepository.listPersonaisById(objeto.id_personal);
       const nomePersonal = resultado.nome;
       const objetoCompleto = { ...objeto, nomePersonal };
@@ -251,8 +233,7 @@ class AlunoController
     response.json(listaFinal);
   }
 
-  async alunoTodos(request, response)
-  {
+  async alunoTodos(request, response) {
     const result = await AlunoRepository.alunosTodos();
 
     response.json(result);
