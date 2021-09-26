@@ -79,6 +79,7 @@ class AlunoController {
       aulas_pacote,
       valor_aula,
       status_pagamento,
+      data_vencimento,
     } = request.body;
 
     const result = await AlunoRepository.updateAluno(
@@ -92,7 +93,9 @@ class AlunoController {
         aulas_pacote,
         valor_aula,
         status_pagamento,
+        data_vencimento,
         id_aluno,
+
       ],
     );
 

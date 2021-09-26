@@ -58,7 +58,8 @@ class AlunoRepository {
     aulas_feitas = ?,
     aulas_pacote = ?,
     valor_aula = ?,
-    status_pagamento = ?
+    status_pagamento = ?,
+    data_vencimento = ?
     WHERE id_aluno = ?
     `;
 
