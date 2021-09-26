@@ -192,14 +192,19 @@ class AlunoController {
 
     const filtroData = [day3, day2, day1];
     const diaCriado1 = filtroData[0].getDate();
-    const mesCriado1 = filtroData[0].getMonth();
+    const mesCriado1 = filtroData[0].getMonth() + 1;
     const anoCriado1 = filtroData[0].getFullYear();
     const diaCriado2 = filtroData[1].getDate();
-    const mesCriado2 = filtroData[1].getMonth();
+    const mesCriado2 = filtroData[1].getMonth() + 1;
     const anoCriado2 = filtroData[1].getFullYear();
     const diaCriado3 = filtroData[2].getDate();
-    const mesCriado3 = filtroData[2].getMonth();
+    const mesCriado3 = filtroData[2].getMonth() + 1;
     const anoCriado3 = filtroData[2].getFullYear();
+
+    const dia1 = `${anoCriado1}-${mesCriado1}-${diaCriado1}`;
+    const dia2 = `${anoCriado2}-${mesCriado2}-${diaCriado2}`;
+    const dia3 = `${anoCriado3}-${mesCriado3}-${diaCriado3}`;
+
     const lista = [];
     const filtrado = result.map((value) => {
       const diaBanco = value.data_vencimento.getDate();
@@ -207,9 +212,6 @@ class AlunoController {
       const anoBanco = value.data_vencimento.getFullYear();
 
       const dataBanco = `${anoBanco}-${mesBanco}-${diaBanco}`;
-      const dia1 = `${anoCriado1}-${mesCriado1}-${diaCriado1}`;
-      const dia2 = `${anoCriado2}-${mesCriado2}-${diaCriado2}`;
-      const dia3 = `${anoCriado3}-${mesCriado3}-${diaCriado3}`;
 
       if (dataBanco === dia1 || dataBanco === dia2 || dataBanco === dia3) {
         const {
