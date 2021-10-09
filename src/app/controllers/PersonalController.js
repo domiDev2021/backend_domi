@@ -19,8 +19,6 @@ class PersonalController {
       nome, email, telefone, cpf, agencia, conta, codigo_banco, pix,
     };
 
-    console.log(cpf);
-    console.log(personalData);
     const result = await PersonalRepository.registerPersonal(personalData);
     response.json(result);
   }

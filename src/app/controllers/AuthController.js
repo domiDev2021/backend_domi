@@ -6,7 +6,7 @@ class AuthController {
     const token = request.header('authorization-token');
 
     if (!token) {
-      return response.status(401).json('Acess denied');
+      return response.status(401).json('Acess negado');
     }
 
     try {
@@ -14,7 +14,7 @@ class AuthController {
       request.user = userVerified;
       next();
     } catch (error) {
-      response.status(401).json('Status negado');
+      response.status(401).json('Acesso negado');
     }
   }
 }

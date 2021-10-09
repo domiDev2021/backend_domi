@@ -135,44 +135,10 @@ class AlunoController {
 
   async filtroPorMesAlunos(request, response) {
     const { id } = request.params;
-    const results = await LancamentoRepository.JoinLancamentoPersonal(id);
-    const chavesPermitidas = ['nome', 'aulas_feitas', 'valor_aula', 'data_inicial', 'quantidade'];
-    const resultFiltrado = results.map((result) => {
-      const keys = Object.keys(result);
-      const chavesFiltradas = keys.filter((key) => chavesPermitidas.includes(key));
-      const listReduce = chavesFiltradas.reduce((objeto, chave) => {
-        objeto[chave] = result[chave];
-        return objeto;
-      }, {});
-      return listReduce;
-    });
 
-    const dicionarioCompleto = resultFiltrado.map((objeto) => (
-      {
-        ...objeto,
-        faturamento: (objeto.valor_aula * objeto.quantidade),
-        dia: objeto.data_inicial.getDate(),
-      }
-    ));
+    const result = await LancamentoRepository.JoinLancamentoPersonal(id);
 
-    const filtroAplicado = dicionarioCompleto.map((objeto) => {
-      let semana = 0;
-      if (objeto.dia <= 7) {
-        semana = 1;
-      } else if (objeto.dia > 7 && objeto.dia <= 15) {
-        semana = 2;
-      } else if (objeto.dia > 15 && objeto.dia <= 21) {
-        semana = 3;
-      } else if (objeto.dia > 21 && objeto.dia <= 27) {
-        semana = 4;
-      } else {
-        semana = 5;
-      }
-
-      return { ...objeto, semana };
-    });
-
-    response.json(filtroAplicado);
+    response.json(result);
   }
 
   async autorizarCobranca(request, response) {
