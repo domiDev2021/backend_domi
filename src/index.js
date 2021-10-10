@@ -7,7 +7,7 @@ const routes = require('./routes');
 const app = express();
 
 const corsOptions = {
-  exposedHeaders: 'Authorization',
+  exposedHeaders: 'authorization-token',
 };
 
 app.use(cors(corsOptions));
