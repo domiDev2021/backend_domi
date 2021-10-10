@@ -32,7 +32,9 @@ class UserController {
       return response.status(400).json('Email or password incorrect');
     }
 
-    const token = jwt.sign({ _id: passwordDb[0].userId }, process.env.TOKEN_SECRET);
+    const token = jwt.sign({ _id: passwordDb[0].userId }, process.env.TOKEN_SECRET, {
+      expiresIn: '12h',
+    });
 
     response.header('authorization-token', token);
     response.json('Usuario logado com sucesso');
