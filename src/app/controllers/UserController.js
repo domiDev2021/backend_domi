@@ -33,10 +33,17 @@ class UserController {
     }
 
     const token = jwt.sign({ _id: passwordDb[0].userId }, process.env.TOKEN_SECRET, {
-      expiresIn: '12h',
+      expiresIn: '24h',
     });
 
-    response.header('authorization-token', token);
+    const date = new Date(Date.now());
+    date.setDate(date.getHours + 24);
+
+    response.cookie('token', token, {
+      expires: date,
+      secure: false,
+      httpOnly: true,
+    });
     response.json('Usuario logado com sucesso');
   }
 }
