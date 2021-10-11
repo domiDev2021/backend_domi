@@ -121,6 +121,18 @@ class AlunoRepository {
     });
   }
 
+  countAulasByPersonalId(id) {
+    const query = 'SELECT sum(aulas_feitas) FROM alunos WHERE id_personal = ?';
+    return new Promise((resolve, reject) => {
+      db.query(query, id, (erro, resultado) => {
+        if (erro) {
+          return reject(erro);
+        }
+        return resolve(resultado);
+      });
+    });
+  }
+
   listAlunosDevendo() {
     const query = 'SELECT * FROM alunos WHERE status_pagamento = 0';
     return new Promise((resolve, reject) => {

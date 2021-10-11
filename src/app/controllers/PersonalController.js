@@ -38,10 +38,10 @@ class PersonalController {
       );
       const numeroDeAlunosDevendoByPersonalId = Object.values(alunosDevendoByPersonalId)[0];
 
-      const [quantidadeAlunosByPersonalId] = await AlunoRepository.countAlunosByPersonalId(
+      const [quantidadeAulasFeitasByPersonalId] = await AlunoRepository.countAulasByPersonalId(
         objeto.id_personal,
       );
-      const numeroTotalDeAlunosByPersonalId = Object.values(quantidadeAlunosByPersonalId)[0];
+      const numeroTotalDeAulasFeitasByPersonalId = Object.values(quantidadeAulasFeitasByPersonalId)[0];
 
       const [dicionarioFaturamento] = await LancamentoRepository.faturamentoAula(
         objeto.id_personal,
@@ -65,7 +65,7 @@ class PersonalController {
           nomePersonal,
           personalId,
           numeroDeAlunosDevendoByPersonalId,
-          numeroTotalDeAlunosByPersonalId,
+          numeroTotalDeAulasFeitasByPersonalId,
           faturamento,
         };
         return personais;
