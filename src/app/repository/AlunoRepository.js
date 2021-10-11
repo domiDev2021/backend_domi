@@ -170,7 +170,7 @@ class AlunoRepository {
   }
 
   comprovantes() {
-    const query = 'SELECT * FROM alunos WHERE comprovantes = 0';
+    const query = 'SELECT * FROM alunos WHERE comprovante = 0';
     return new Promise((resolve, reject) => {
       db.query(query, (erro, resultado) => {
         if (erro) {

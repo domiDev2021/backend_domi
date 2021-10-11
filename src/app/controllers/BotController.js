@@ -39,6 +39,13 @@ class BotController {
 
     response.json(objetoRequest);
   }
+
+  async mudaStatusComprovante(request, response) {
+    const { phone } = request.params;
+    const result = BotRepository.changeAlunoComprovante(phone);
+
+    response.status(200).send();
+  }
 }
 
 module.exports = new BotController();

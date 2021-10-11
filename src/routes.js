@@ -44,5 +44,6 @@ router.get('/todos/alunos', AuthController.validaAcess, AlunoController.alunoTod
 
 // BOT
 router.get('/bot/:phone', BotController.getPersonalDataByPhone);
+router.post('/bot/:phone', BotController.mudaStatusComprovante);
 
 module.exports = router;

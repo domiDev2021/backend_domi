@@ -16,6 +16,18 @@ class BotRepository {
       });
     });
   }
+
+  changeAlunoComprovante(phone) {
+    const query = 'UPDATE alunos SET comprovante = 1 WHERE celular = ?';
+    return new Promise((resolve, reject) => {
+      db.query(query, phone, (erro, resultado) => {
+        if (erro) {
+          return reject(erro);
+        }
+        return resolve(resultado);
+      });
+    });
+  }
 }
 
 module.exports = new BotRepository();
