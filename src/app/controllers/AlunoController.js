@@ -11,14 +11,12 @@ class AlunoController {
       nome,
       celular,
       plano,
-      aulas_feitas,
       aulas_pacote,
       valor_aula,
       data_vencimento,
     } = request.body;
 
     const dataVencimento = moment(data_vencimento).local().format('YYYY-MM-DD');
-    console.log(dataVencimento);
 
     const result = await AlunoRepository.registerAluno(
       {
@@ -26,7 +24,7 @@ class AlunoController {
         nome,
         celular,
         plano,
-        aulas_feitas,
+        aulas_feitas: 0,
         aulas_pacote,
         valor_aula,
         status_pagamento: 0,
