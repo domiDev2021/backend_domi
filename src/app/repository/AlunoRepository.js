@@ -170,9 +170,21 @@ class AlunoRepository {
   }
 
   comprovantes() {
-    const query = 'SELECT * FROM alunos WHERE status_pagamento = 1';
+    const query = 'SELECT * FROM alunos WHERE comprovantes = 0';
     return new Promise((resolve, reject) => {
       db.query(query, (erro, resultado) => {
+        if (erro) {
+          return reject(erro);
+        }
+        return resolve(resultado);
+      });
+    });
+  }
+
+  cobranca(data) {
+    const query = 'SELECT * FROM alunos WHERE data_vencimento < ?';
+    return new Promise((resolve, reject) => {
+      db.query(query, data, (erro, resultado) => {
         if (erro) {
           return reject(erro);
         }

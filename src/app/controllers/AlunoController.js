@@ -1,3 +1,5 @@
+const moment = require('moment');
+
 const AlunoRepository = require('../repository/AlunoRepository');
 const LancamentoRepository = require('../repository/LancamentoRepository');
 const PersonalRepository = require('../repository/PersonalRepository');
@@ -12,9 +14,11 @@ class AlunoController {
       aulas_feitas,
       aulas_pacote,
       valor_aula,
-      status_pagamento,
       data_vencimento,
     } = request.body;
+
+    const dataVencimento = moment(data_vencimento).local().format('YYYY-MM-DD');
+    console.log(dataVencimento);
 
     const result = await AlunoRepository.registerAluno(
       {
@@ -25,8 +29,9 @@ class AlunoController {
         aulas_feitas,
         aulas_pacote,
         valor_aula,
-        status_pagamento,
-        data_vencimento,
+        status_pagamento: 0,
+        comprovante: 0,
+        data_vencimento: dataVencimento,
       },
     );
 
@@ -142,66 +147,33 @@ class AlunoController {
   }
 
   async autorizarCobranca(request, response) {
-    const { dia } = request.params;
+    const date = new Date(Date.now());
+    date.setDate(date.getDate() + 3);
+    const dataParaCobrar = moment(date).format('YYYY-MM-DD');
 
-    const result = await AlunoRepository.listAlunos();
+    const alunos = await AlunoRepository.cobranca(dataParaCobrar);
 
-    const day = new Date();
-    day.setDate(dia);
-    const day1 = new Date(day);
-    const day2 = new Date(day);
-    const day3 = new Date(day);
+    const listaAlunos = await Promise.all(alunos.map(async (aluno) => {
+      const {
+        id_aluno, id_personal, nome, data_vencimento, valor_aula, plano, aulas_feitas,
+      } = aluno;
+      const [result] = await PersonalRepository.listPersonaisById(id_personal);
 
-    day1.setDate(day1.getDate());
-    day2.setDate(day2.getDate() - 1);
-    day3.setDate(day3.getDate() - 2);
-
-    const filtroData = [day3, day2, day1];
-    const diaCriado1 = filtroData[0].getDate();
-    const mesCriado1 = filtroData[0].getMonth() + 1;
-    const anoCriado1 = filtroData[0].getFullYear();
-    const diaCriado2 = filtroData[1].getDate();
-    const mesCriado2 = filtroData[1].getMonth() + 1;
-    const anoCriado2 = filtroData[1].getFullYear();
-    const diaCriado3 = filtroData[2].getDate();
-    const mesCriado3 = filtroData[2].getMonth() + 1;
-    const anoCriado3 = filtroData[2].getFullYear();
-
-    const dia1 = `${anoCriado1}-${mesCriado1}-${diaCriado1}`;
-    const dia2 = `${anoCriado2}-${mesCriado2}-${diaCriado2}`;
-    const dia3 = `${anoCriado3}-${mesCriado3}-${diaCriado3}`;
-
-    const lista = [];
-    const filtrado = result.map((value) => {
-      const diaBanco = value.data_vencimento.getDate();
-      const mesBanco = value.data_vencimento.getMonth() + 1;
-      const anoBanco = value.data_vencimento.getFullYear();
-
-      const dataBanco = `${anoBanco}-${mesBanco}-${diaBanco}`;
-
-      if (dataBanco === dia1 || dataBanco === dia2 || dataBanco === dia3) {
-        const {
-          id_aluno, id_personal, nome, plano, aulas_feitas, valor_aula,
-        } = value;
-
-        lista.push({
-          id_aluno, id_personal, nome, plano, aulas_feitas, valor_aula,
-        });
-      }
-
-      return lista;
-    });
-    const listaFinal = [];
-    const final = await Promise.all(filtrado[0].map(async (objeto) => {
-      const [resultado] = await PersonalRepository.listPersonaisById(objeto.id_personal);
-      const nomePersonal = resultado.nome;
-      const objetoCompleto = { ...objeto, nomePersonal };
-      listaFinal.push(objetoCompleto);
-
-      return listaFinal;
+      const nomeDoPersonal = result.nome;
+      const dataVencimento = moment(data_vencimento).format('YYYY-MM-DD');
+      return {
+        id_aluno,
+        id_personal,
+        nome,
+        nomeDoPersonal,
+        data_vencimento: dataVencimento,
+        valor_aula,
+        aulas_feitas,
+        plano,
+      };
     }));
 
-    response.json(listaFinal);
+    response.json(listaAlunos);
   }
 
   async alunoTodos(request, response) {
