@@ -17,7 +17,7 @@ router.post('/login', UserController.loginUser);
 router.post('/personal', AuthController.validaAcess, PersonalController.registerPersonal);
 router.get('/personal', AuthController.validaAcess, PersonalController.listPersonais);
 router.get('/personal/:id', AuthController.validaAcess, PersonalController.listPersonalById);
-router.get('/resumo', AuthController.validaAcess, PersonalController.dadosDoPersonalResumido);
+router.get('/resumo/:id', AuthController.validaAcess, PersonalController.dadosDoPersonalResumido);
 router.get('/faturamento/:id', AuthController.validaAcess, PersonalController.filtroMesFinanceiroPersonal);
 
 // Aluno

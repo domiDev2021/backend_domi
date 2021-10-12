@@ -29,7 +29,8 @@ class PersonalController {
   }
 
   async dadosDoPersonalResumido(request, response) {
-    const alunosDevendo = await AlunoRepository.listAlunosDevendo();
+    const { id } = request.params;
+    const alunosDevendo = await AlunoRepository.listAlunosDevendoById(id);
 
     const personais = new Object();
     const infoAlunosDevendo = await Promise.all(alunosDevendo.map(async (objeto) => {
