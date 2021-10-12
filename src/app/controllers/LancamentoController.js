@@ -1,3 +1,4 @@
+const moment = require('moment');
 const AlunoRepository = require('../repository/AlunoRepository');
 const LancamentoRepository = require('../repository/LancamentoRepository');
 
@@ -25,6 +26,11 @@ class LancamentoController {
       id_personal, id_aluno, quantidade, valor,
     });
 
+    const [{ data_vencimento }] = await AlunoRepository.listByAlunoId(id_aluno);
+    const novaDataVencimento = new Date(data_vencimento);
+    novaDataVencimento.setMonth(novaDataVencimento.getMonth() + 1);
+
+    await AlunoRepository.updateDataVencimento([novaDataVencimento, id_aluno]);
     response.json(result);
   }
 

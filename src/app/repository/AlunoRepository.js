@@ -216,6 +216,18 @@ class AlunoRepository {
       });
     });
   }
+
+  updateDataVencimento(dados) {
+    const query = 'UPDATE alunos SET data_vencimento = ?, status_pagamento = 1 WHERE id_aluno = ?';
+    return new Promise((resolve, reject) => {
+      db.query(query, dados, (erro, resultado) => {
+        if (erro) {
+          return reject(erro);
+        }
+        return resolve(resultado);
+      });
+    });
+  }
 }
 
 module.exports = new AlunoRepository();
