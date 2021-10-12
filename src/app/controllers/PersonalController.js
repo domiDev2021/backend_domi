@@ -76,6 +76,54 @@ class PersonalController {
     response.json(Object.values(personais));
   }
 
+  async dadosDoPersonalResumidoGeral(request, response) {
+    const { id } = request.params;
+    const alunosDevendo = await AlunoRepository.listAlunosDevendo();
+
+    const personais = new Object();
+    const infoAlunosDevendo = await Promise.all(alunosDevendo.map(async (objeto) => {
+      const [alunosDevendoByPersonalId] = await AlunoRepository.contaNumeroDeAlunosDevendoByPersonalId(
+        objeto.id_personal,
+      );
+      const numeroDeAlunosDevendoByPersonalId = Object.values(alunosDevendoByPersonalId)[0];
+
+      const [quantidadeAlunosByPersonalId] = await AlunoRepository.countAlunosByPersonalId(
+        objeto.id_personal,
+      );
+      const numeroTotalDeAlunossByPersonalId = Object.values(quantidadeAlunosByPersonalId)[0];
+
+      const [dicionarioFaturamento] = await LancamentoRepository.faturamentoAula(
+        objeto.id_personal,
+      );
+      const faturamentoAula = Object.values(dicionarioFaturamento)[0];
+
+      const [dicionarioFaturamentoExtra] = await LancamentoRepository.faturamentoExtra(
+        objeto.id_personal,
+      );
+      const faturamentoExtra = Object.values(dicionarioFaturamentoExtra)[0];
+
+      const faturamento = faturamentoAula + faturamentoExtra;
+
+      const [personalDados] = await PersonalRepository.listPersonaisById(objeto.id_personal);
+
+      const nomePersonal = personalDados.nome;
+      const personalId = objeto.id_personal;
+
+      if (!(nomePersonal in Object.keys(personais))) {
+        personais[`${nomePersonal}`] = {
+          nomePersonal,
+          personalId,
+          numeroDeAlunosDevendoByPersonalId,
+          numeroTotalDeAlunossByPersonalId,
+          faturamento,
+        };
+        return personais;
+      }
+    }));
+
+    response.json(Object.values(personais));
+  }
+
   async listPersonalById(request, response) {
     const { id } = request.params;
     const [{
