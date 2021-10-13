@@ -105,6 +105,7 @@ class PersonalController {
       });
 
       const objeto = {
+        id_personal,
         nome,
         numeroDeAlunosAtrasados,
         numeroTotalDeAlunos,
