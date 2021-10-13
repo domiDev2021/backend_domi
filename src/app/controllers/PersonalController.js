@@ -1,7 +1,6 @@
 const PersonalRepository = require('../repository/PersonalRepository');
 const AlunoRepository = require('../repository/AlunoRepository');
 const LancamentoRepository = require('../repository/LancamentoRepository');
-const { alunoTodos } = require('./AlunoController');
 
 class PersonalController {
   async registerPersonal(request, response) {
@@ -30,98 +29,92 @@ class PersonalController {
 
   async dadosDoPersonalResumido(request, response) {
     const { id } = request.params;
-    const alunosDevendo = await AlunoRepository.listAlunosDevendoById(id);
 
-    const personais = new Object();
-    const infoAlunosDevendo = await Promise.all(alunosDevendo.map(async (objeto) => {
-      const [alunosDevendoByPersonalId] = await AlunoRepository.contaNumeroDeAlunosDevendoByPersonalId(
-        objeto.id_personal,
-      );
-      const numeroDeAlunosDevendoByPersonalId = Object.values(alunosDevendoByPersonalId)[0];
+    const [{
+      nome, email, telefone, cpf, agencia, conta, codigo_banco, pix,
+    }] = await PersonalRepository.listPersonaisById(id);
+    const [alunosAtrasado] = await AlunoRepository.contaNumeroDeAlunosDevendoByPersonalId(id);
+    const numeroDeAlunosAtrasados = alunosAtrasado['COUNT(*)'];
 
-      const [quantidadeAulasFeitasByPersonalId] = await AlunoRepository.countAulasByPersonalId(
-        objeto.id_personal,
-      );
-      const numeroTotalDeAulasFeitasByPersonalId = Object.values(quantidadeAulasFeitasByPersonalId)[0];
+    const todosAlunos = await AlunoRepository.listByPersonalId(id);
 
-      const [dicionarioFaturamento] = await LancamentoRepository.faturamentoAula(
-        objeto.id_personal,
-      );
-      const faturamentoAula = Object.values(dicionarioFaturamento)[0];
-
-      const [dicionarioFaturamentoExtra] = await LancamentoRepository.faturamentoExtra(
-        objeto.id_personal,
-      );
-      const faturamentoExtra = Object.values(dicionarioFaturamentoExtra)[0];
-
-      const faturamento = faturamentoAula + faturamentoExtra;
-
-      const [personalDados] = await PersonalRepository.listPersonaisById(objeto.id_personal);
-
-      const nomePersonal = personalDados.nome;
-      const personalId = objeto.id_personal;
-
-      if (!(nomePersonal in Object.keys(personais))) {
-        personais[`${nomePersonal}`] = {
-          nomePersonal,
-          personalId,
-          numeroDeAlunosDevendoByPersonalId,
-          numeroTotalDeAulasFeitasByPersonalId,
-          faturamento,
-        };
-        return personais;
+    let faturamentoTotal = 0;
+    todosAlunos.forEach((aluno) => {
+      const { aulas_pacote, valor_aula, aulas_feitas } = aluno;
+      if (aulas_pacote === 0) {
+        faturamentoTotal += valor_aula;
+      } else {
+        faturamentoTotal += valor_aula * aulas_feitas;
       }
-    }));
+    });
 
-    response.json(Object.values(personais));
+    let numeroDeAulasDoMesFeitas = 0;
+    const mes = new Date().getMonth();
+    const lancamentosAulas = await LancamentoRepository.listaLancamentoDeAulasByPersonalId(id);
+
+    lancamentosAulas.forEach((lancamento) => {
+      const { data_inicial, quantidade } = lancamento;
+      let mesLancado = new Date(data_inicial).getMonth();
+      if (mesLancado = mes) {
+        numeroDeAulasDoMesFeitas += quantidade;
+      }
+    });
+
+    const objetoFinal = {
+      nome,
+      email,
+      telefone,
+      cpf,
+      agencia,
+      conta,
+      codigo_banco,
+      pix,
+      numeroDeAlunosAtrasados,
+      faturamentoTotal,
+      numeroDeAulasDoMesFeitas,
+    };
+    response.json(objetoFinal);
   }
 
   async dadosDoPersonalResumidoGeral(request, response) {
-    const { id } = request.params;
-    const alunosDevendo = await AlunoRepository.listAlunosDevendo();
-
-    const personais = new Object();
-    const infoAlunosDevendo = await Promise.all(alunosDevendo.map(async (objeto) => {
-      const [alunosDevendoByPersonalId] = await AlunoRepository.contaNumeroDeAlunosDevendoByPersonalId(
-        objeto.id_personal,
+    // nomeDeCadaPersonal,
+    // quantidadeDeAlunos atrasados,
+    // numero de alunos total
+    // faturamento
+    const personais = await PersonalRepository.listPersonais();
+    const listaFinal = await Promise.all(personais.map(async (personal) => {
+      const { nome, id_personal } = personal;
+      const [alunosAtrasado] = await AlunoRepository.contaNumeroDeAlunosDevendoByPersonalId(
+        id_personal,
       );
-      const numeroDeAlunosDevendoByPersonalId = Object.values(alunosDevendoByPersonalId)[0];
+      const numeroDeAlunosAtrasados = alunosAtrasado['COUNT(*)'];
 
-      const [quantidadeAlunosByPersonalId] = await AlunoRepository.countAlunosByPersonalId(
-        objeto.id_personal,
-      );
-      const numeroTotalDeAlunossByPersonalId = Object.values(quantidadeAlunosByPersonalId)[0];
+      const [alunosTotal] = await AlunoRepository.countAlunosByPersonalId(id_personal);
+      const numeroTotalDeAlunos = alunosTotal['COUNT(*)'];
 
-      const [dicionarioFaturamento] = await LancamentoRepository.faturamentoAula(
-        objeto.id_personal,
-      );
-      const faturamentoAula = Object.values(dicionarioFaturamento)[0];
+      const todosAlunos = await AlunoRepository.listByPersonalId(id_personal);
 
-      const [dicionarioFaturamentoExtra] = await LancamentoRepository.faturamentoExtra(
-        objeto.id_personal,
-      );
-      const faturamentoExtra = Object.values(dicionarioFaturamentoExtra)[0];
+      let faturamentoTotal = 0;
+      todosAlunos.forEach((aluno) => {
+        const { aulas_pacote, valor_aula, aulas_feitas } = aluno;
+        if (aulas_pacote === 0) {
+          faturamentoTotal += valor_aula;
+        } else {
+          faturamentoTotal += valor_aula * aulas_feitas;
+        }
+      });
 
-      const faturamento = faturamentoAula + faturamentoExtra;
+      const objeto = {
+        nome,
+        numeroDeAlunosAtrasados,
+        numeroTotalDeAlunos,
+        faturamentoTotal,
+      };
 
-      const [personalDados] = await PersonalRepository.listPersonaisById(objeto.id_personal);
-
-      const nomePersonal = personalDados.nome;
-      const personalId = objeto.id_personal;
-
-      if (!(nomePersonal in Object.keys(personais))) {
-        personais[`${nomePersonal}`] = {
-          nomePersonal,
-          personalId,
-          numeroDeAlunosDevendoByPersonalId,
-          numeroTotalDeAlunossByPersonalId,
-          faturamento,
-        };
-        return personais;
-      }
+      return objeto;
     }));
 
-    response.json(Object.values(personais));
+    response.json(listaFinal);
   }
 
   async listPersonalById(request, response) {

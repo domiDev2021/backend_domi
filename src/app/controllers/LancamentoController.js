@@ -1,4 +1,3 @@
-const moment = require('moment');
 const AlunoRepository = require('../repository/AlunoRepository');
 const LancamentoRepository = require('../repository/LancamentoRepository');
 
