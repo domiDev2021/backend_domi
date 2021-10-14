@@ -192,6 +192,14 @@ class AlunoController {
 
     response.json(infoDePagamento);
   }
+
+  async desligarAluno(request, response) {
+    const { id } = request.params;
+
+    await AlunoRepository.desligarAluno(id);
+
+    response.sendStatus(204);
+  }
 }
 
 module.exports = new AlunoController();

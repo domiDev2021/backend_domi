@@ -27,7 +27,7 @@ router.get('/alunos/aluno/:id', AuthController.validaAcess, AlunoController.list
 router.get('/alunos', AuthController.validaAcess, AlunoController.listAlunos);
 router.put('/alunos', AuthController.validaAcess, AlunoController.updateAlunos);
 router.post('/alunos', AuthController.validaAcess, AlunoController.registerAluno);
-router.delete('/alunos/:id', AuthController.validaAcess, AlunoController.deleteAluno);
+router.get('/alunos/:id', AuthController.validaAcess, AlunoController.desligarAluno);
 router.get('/tabela', AuthController.validaAcess, AlunoController.listAlunosTabela);
 router.get('/mes/:id', AuthController.validaAcess, AlunoController.filtroPorMesAlunos);
 router.get('/cobranca', AuthController.validaAcess, AlunoController.autorizarCobranca);
