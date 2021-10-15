@@ -1,6 +1,6 @@
 const BotRepository = require('../repository/BotRepository');
-require('dotenv').config();
-const client = require('twilio')(process.env.ACCOUNT_SID, process.env.AUTH_TOKEN);
+// require('dotenv').config();
+// const client = require('twilio')(process.env.ACCOUNT_SID, process.env.AUTH_TOKEN);
 
 class BotController {
   async getPersonalDataByPhone(request, response) {
