@@ -150,8 +150,11 @@ class AlunoController {
     const dataParaCobrar = moment(date).format('YYYY-MM-DD');
 
     const alunos = await AlunoRepository.cobranca(dataParaCobrar);
+    const alunosPorQuantidade = await AlunoRepository.cobrancaQuantidade();
 
-    const listaAlunos = await Promise.all(alunos.map(async (aluno) => {
+    const todasDividas = [...alunos, ...alunosPorQuantidade];
+
+    const listaAlunos = await Promise.all(todasDividas.map(async (aluno) => {
       const {
         id_aluno, id_personal, nome, data_vencimento, valor_aula, plano, aulas_feitas,
       } = aluno;

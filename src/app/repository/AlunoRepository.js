@@ -194,7 +194,7 @@ class AlunoRepository {
   }
 
   comprovantes() {
-    const query = 'SELECT * FROM alunos WHERE comprovante = 0 and ativo = 1';
+    const query = 'SELECT * FROM alunos WHERE comprovante = 1 and ativo = 1';
     return new Promise((resolve, reject) => {
       db.query(query, (erro, resultado) => {
         if (erro) {
@@ -209,6 +209,18 @@ class AlunoRepository {
     const query = 'SELECT * FROM alunos WHERE data_vencimento < ? and ativo = 1';
     return new Promise((resolve, reject) => {
       db.query(query, data, (erro, resultado) => {
+        if (erro) {
+          return reject(erro);
+        }
+        return resolve(resultado);
+      });
+    });
+  }
+
+  cobrancaQuantidade() {
+    const query = 'SELECT * FROM domibase.alunos WHERE aulas_pacote - aulas_feitas <= 1 and aulas_pacote != 0and ativo = 1';
+    return new Promise((resolve, reject) => {
+      db.query(query, (erro, resultado) => {
         if (erro) {
           return reject(erro);
         }
