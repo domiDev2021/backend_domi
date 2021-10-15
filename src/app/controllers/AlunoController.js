@@ -156,7 +156,7 @@ class AlunoController {
 
     const listaAlunos = await Promise.all(todasDividas.map(async (aluno) => {
       const {
-        id_aluno, id_personal, nome, data_vencimento, valor_aula, plano, aulas_feitas,
+        id_aluno, id_personal, nome, data_vencimento, valor_aula, plano, aulas_feitas, aulas_pacote,
       } = aluno;
       const [result] = await PersonalRepository.listPersonaisById(id_personal);
 
@@ -170,6 +170,7 @@ class AlunoController {
         data_vencimento: dataVencimento,
         valor_aula,
         aulas_feitas,
+        aulas_pacote,
         plano,
       };
     }));
