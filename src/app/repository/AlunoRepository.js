@@ -218,7 +218,7 @@ class AlunoRepository {
   }
 
   cobrancaQuantidade() {
-    const query = 'SELECT * FROM domibase.alunos WHERE aulas_pacote - aulas_feitas <= 1 and aulas_pacote != 0and ativo = 1';
+    const query = 'SELECT * FROM domibase.alunos WHERE aulas_pacote - aulas_feitas <= 1 and aulas_pacote != 0 and ativo = 1';
     return new Promise((resolve, reject) => {
       db.query(query, (erro, resultado) => {
         if (erro) {
