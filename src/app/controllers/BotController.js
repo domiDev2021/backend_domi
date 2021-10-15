@@ -2,7 +2,6 @@ const BotRepository = require('../repository/BotRepository');
 require('dotenv').config();
 const client = require('twilio')(process.env.ACCOUNT_SID, process.env.AUTH_TOKEN);
 
-
 class BotController {
   async getPersonalDataByPhone(request, response) {
     const { phone } = request.params;
@@ -50,20 +49,20 @@ class BotController {
     response.status(200).send();
   }
 
-  enviaMenssagem(dados) {
-    const { };
-    const parametros = {};
+  // enviaMenssagem(dados) {
+  //   const { x };
+  //   const parametros = {};
 
-    client.studio.flows(process.env.BOT_TOKEN)
-      .executions
-      .create({
-        to: `+55${}`,
-        from: '',
-        parameters: parametros
-      })
-      .then(execution => console.log(execution.sid));
+  //   client.studio.flows(process.env.BOT_TOKEN)
+  //     .executions
+  //     .create({
+  //       to: `+55${}`,
+  //       from: '',
+  //       parameters: parametros
+  //     })
+  //     .then(execution => console.log(execution.sid));
 
-  }
+  // }
 }
 
 module.exports = new BotController();
