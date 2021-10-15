@@ -206,7 +206,7 @@ class AlunoRepository {
   }
 
   cobranca(data) {
-    const query = 'SELECT * FROM alunos WHERE data_vencimento < ? and ativo = 1';
+    const query = "SELECT * FROM alunos WHERE data_vencimento < ? and plano = 'Mensal' and ativo = 1";
     return new Promise((resolve, reject) => {
       db.query(query, data, (erro, resultado) => {
         if (erro) {

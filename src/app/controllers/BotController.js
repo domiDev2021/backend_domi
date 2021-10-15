@@ -1,6 +1,6 @@
+const client = require('twilio')(process.env.ACCOUNT_SID, process.env.AUTH_TOKEN);
 const BotRepository = require('../repository/BotRepository');
-// require('dotenv').config();
-// const client = require('twilio')(process.env.ACCOUNT_SID, process.env.AUTH_TOKEN);
+require('dotenv').config();
 
 class BotController {
   async getPersonalDataByPhone(request, response) {
@@ -49,20 +49,48 @@ class BotController {
     response.status(200).send();
   }
 
-  // enviaMenssagem(dados) {
-  //   const { x };
-  //   const parametros = {};
+  enviaMenssagem(dados) {
+    let parametros = {};
+    const {
+      plano, gatilho, nome, PersonalNome, celular, pix,
+    } = dados;
 
-  //   client.studio.flows(process.env.BOT_TOKEN)
-  //     .executions
-  //     .create({
-  //       to: `+55${}`,
-  //       from: '',
-  //       parameters: parametros
-  //     })
-  //     .then(execution => console.log(execution.sid));
+    if (plano === 'Mensal') {
+      const { data_vencimento, totalPagar } = dados;
+      parametros = {
+        gatilho,
+        plano,
+        nome,
+        PersonalNome,
+        pix,
+        celular,
+        data_vencimento,
+        totalPagar,
+      };
+    } else if (plano === 'Diario') {
+      const { aulasDisponiveis, totalPagar, valorPorAula } = dados;
+      parametros = {
+        gatilho,
+        plano,
+        nome,
+        PersonalNome,
+        pix,
+        celular,
+        aulasDisponiveis,
+        totalPagar,
+        valorPorAula,
+      };
+    }
 
-  // }
+    client.studio.flows(process.env.BOT_TOKEN)
+      .executions
+      .create({
+        to: `+55${celular}`,
+        from: process.env.PHONE,
+        parameters: parametros,
+      })
+      .then((execution) => console.log(execution.sid));
+  }
 }
 
 module.exports = new BotController();
