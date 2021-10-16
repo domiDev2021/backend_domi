@@ -72,7 +72,7 @@ class BotController {
         totalPagar,
       };
     } else if (plano === 'Diario') {
-      const { aulasDisponiveis, totalPagar, valorPorAula } = dados;
+      const { aulasDisponiveis, totalPagar, valor_aula } = dados;
       parametros = {
         gatilho,
         plano,
@@ -82,7 +82,7 @@ class BotController {
         celular,
         aulasDisponiveis,
         totalPagar,
-        valorPorAula,
+        valorPorAula: valor_aula,
       };
     }
     // console.log(parametros);
