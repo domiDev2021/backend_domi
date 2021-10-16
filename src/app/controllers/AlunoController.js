@@ -20,7 +20,8 @@ class AlunoController {
     } = request.body;
 
     const dataVencimento = moment(data_vencimento).local().format('YYYY-MM-DD');
-    const { pix } = await PersonalRepository.listPersonaisById(id_personal);
+    const dataVencimentoBot = moment(data_vencimento).local().format('DD-MM-YYYY');
+    const [{ pix }] = await PersonalRepository.listPersonaisById(id_personal);
 
     const result = await AlunoRepository.registerAluno(
       {
@@ -58,11 +59,11 @@ class AlunoController {
         personalNome,
         pix,
         celular,
-        data_vencimento: dataVencimento,
+        data_vencimento: dataVencimentoBot,
         totalPagar: 0,
-
       };
     }
+
     BotController.enviaMenssagem(dados);
     response.json(result);
   }
