@@ -1,3 +1,4 @@
+const moment = require('moment');
 const client = require('twilio')(process.env.ACCOUNT_SID, process.env.AUTH_TOKEN);
 const BotRepository = require('../repository/BotRepository');
 require('dotenv').config();
@@ -28,6 +29,7 @@ class BotController {
     }
 
     const [primeiroNome] = nome.split(' ');
+    const dataVencimento = moment(data_vencimento).local().format('DD-MM-YYYY');
 
     const objetoRequest = {
       PersonalNome,
@@ -35,7 +37,7 @@ class BotController {
       primeiroNome,
       celular,
       plano,
-      data_vencimento,
+      data_vencimento: dataVencimento,
       totalPagar,
       aulasDisponiveis,
       valorPorAula,
