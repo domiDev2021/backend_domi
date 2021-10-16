@@ -117,7 +117,13 @@ class AlunoController {
     const lista = await AlunoRepository.listTelefoneByStatusPagamento();
 
     const result = lista.map((objeto) => {
-      const valorTotal = objeto.aulas_feitas * objeto.valor_aula;
+      let valorTotal = 0;
+      if (objeto.plano === 'Mensal') {
+        valorTotal = objeto.valor_aula;
+      } else {
+        valorTotal = objeto.aulas_feitas * objeto.valor_aula;
+      }
+
       const {
         nome, celular, aulas_feitas, data_vencimento, plano, id_personal,
       } = objeto;

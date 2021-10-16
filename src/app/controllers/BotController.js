@@ -27,10 +27,12 @@ class BotController {
       valorPorAula = result[0].valor_aula;
     }
 
+    const [primeiroNome] = nome.split(' ');
+
     const objetoRequest = {
       PersonalNome,
       pix,
-      nome,
+      primeiroNome,
       celular,
       plano,
       data_vencimento,

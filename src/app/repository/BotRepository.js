@@ -18,7 +18,7 @@ class BotRepository {
   }
 
   changeAlunoComprovante(phone) {
-    const query = 'UPDATE alunos SET comprovante = 1, status_pagamento = 1 WHERE celular = ?';
+    const query = 'UPDATE alunos SET comprovante = 1, status_pagamento = 0 WHERE celular = ?';
     return new Promise((resolve, reject) => {
       db.query(query, phone, (erro, resultado) => {
         if (erro) {

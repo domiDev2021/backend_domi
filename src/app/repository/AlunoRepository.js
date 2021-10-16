@@ -230,7 +230,7 @@ class AlunoRepository {
   }
 
   updateDataVencimento(dados) {
-    const query = 'UPDATE alunos SET data_vencimento = ?, status_pagamento = 0, aulas_feitas = 0 WHERE id_aluno = ?';
+    const query = 'UPDATE alunos SET data_vencimento = ?, status_pagamento = 1, aulas_feitas = 0, comprovante = 0 WHERE id_aluno = ?';
     return new Promise((resolve, reject) => {
       db.query(query, dados, (erro, resultado) => {
         if (erro) {
