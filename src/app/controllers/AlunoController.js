@@ -243,14 +243,16 @@ class AlunoController {
   }
 
   async enviarCobranca(request, response) {
-    const {
+    const { // id_personal
+      id_personal,
+      id_aluno,
       gatilho,
       plano,
       nome,
       personalNome,
-      pix,
-      celular,
     } = request.body;
+    const { pix } = await PersonalRepository.listPersonaisById(id_personal);
+    const { celular } = await AlunoRepository.listByAlunoId(id_aluno);
 
     let dados = 0;
     if (plano === 'Diario') {
