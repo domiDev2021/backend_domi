@@ -83,7 +83,7 @@ class BotController {
         valorPorAula,
       };
     }
-
+    // console.log(parametros);
     client.studio.flows(process.env.BOT_TOKEN)
       .executions
       .create({

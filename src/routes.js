@@ -33,6 +33,7 @@ router.get('/mes/:id', AuthController.validaAcess, AlunoController.filtroPorMesA
 router.get('/cobranca', AuthController.validaAcess, AlunoController.autorizarCobranca);
 router.get('/atrasados', AuthController.validaAcess, AlunoController.telefonesAlunosByPagamento);
 router.get('/comprovantes', AuthController.validaAcess, AlunoController.comprovantes);
+router.post('/cobra', AuthController.validaAcess, AlunoController.enviarCobranca);
 
 // Lançamentos
 router.post('/lancamento/aula', AuthController.validaAcess, LancamentoController.lancaAula);

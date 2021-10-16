@@ -3,6 +3,7 @@ const moment = require('moment');
 const AlunoRepository = require('../repository/AlunoRepository');
 const LancamentoRepository = require('../repository/LancamentoRepository');
 const PersonalRepository = require('../repository/PersonalRepository');
+const BotController = require('./BotController');
 
 class AlunoController {
   async registerAluno(request, response) {
@@ -14,9 +15,12 @@ class AlunoController {
       aulas_pacote,
       valor_aula,
       data_vencimento,
+      gatilho, //
+      personalNome, //
     } = request.body;
 
     const dataVencimento = moment(data_vencimento).local().format('YYYY-MM-DD');
+    const { pix } = await PersonalRepository.listPersonaisById(id_personal);
 
     const result = await AlunoRepository.registerAluno(
       {
@@ -33,6 +37,33 @@ class AlunoController {
       },
     );
 
+    let dados = 0;
+    if (plano === 'Diario') {
+      dados = {
+        gatilho,
+        plano,
+        nome: nome.split(' ')[0],
+        personalNome,
+        pix,
+        celular,
+        aulasDisponiveis: aulas_pacote - 0,
+        totalPagar: 0,
+        valor_aula,
+      };
+    } else {
+      dados = {
+        gatilho,
+        plano,
+        nome: nome.split(' ')[0],
+        personalNome,
+        pix,
+        celular,
+        data_vencimento: dataVencimento,
+        totalPagar: 0,
+
+      };
+    }
+    BotController.enviaMenssagem(dados);
     response.json(result);
   }
 
@@ -209,6 +240,49 @@ class AlunoController {
     await AlunoRepository.desligarAluno(id);
 
     response.sendStatus(204);
+  }
+
+  async enviarCobranca(request, response) {
+    const {
+      gatilho,
+      plano,
+      nome,
+      personalNome,
+      pix,
+      celular,
+    } = request.body;
+
+    let dados = 0;
+    if (plano === 'Diario') {
+      const { aulas_pacote, aulas_feitas, valor_aula } = request.body;
+      dados = {
+        gatilho,
+        plano,
+        nome: nome.split(' ')[0],
+        personalNome,
+        pix,
+        celular,
+        aulasDisponiveis: aulas_pacote - aulas_feitas,
+        totalPagar: aulas_feitas * aulas_pacote,
+        valor_aula,
+      };
+    } else {
+      const { data_vencimento, valor_aula } = request.body;
+      const dataVencimento = moment(data_vencimento).local().format('YYYY-MM-DD');
+      dados = {
+        gatilho,
+        plano,
+        nome: nome.split(' ')[0],
+        personalNome,
+        pix,
+        celular,
+        data_vencimento: dataVencimento,
+        totalPagar: valor_aula,
+
+      };
+    }
+    BotController.enviaMenssagem(dados);
+    response.status(200).send();
   }
 }
 
