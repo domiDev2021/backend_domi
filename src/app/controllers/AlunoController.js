@@ -252,8 +252,8 @@ class AlunoController {
       nome,
       personalNome,
     } = request.body;
-    const { pix } = await PersonalRepository.listPersonaisById(id_personal);
-    const { celular } = await AlunoRepository.listByAlunoId(id_aluno);
+    const [{ pix }] = await PersonalRepository.listPersonaisById(id_personal);
+    const [{ celular }] = await AlunoRepository.listByAlunoId(id_aluno);
 
     let dados = 0;
     if (plano === 'Diario') {
