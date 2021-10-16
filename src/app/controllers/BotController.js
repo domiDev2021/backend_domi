@@ -29,7 +29,7 @@ class BotController {
     }
 
     const [primeiroNome] = nome.split(' ');
-    const dataVencimento = moment(data_vencimento).local().format('DD-MM-YYYY');
+    const dataVencimento = moment(data_vencimento).local().format('DD/MM/YYYY');
 
     const objetoRequest = {
       PersonalNome,
