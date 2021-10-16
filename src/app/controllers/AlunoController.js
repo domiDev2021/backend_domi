@@ -20,7 +20,7 @@ class AlunoController {
     } = request.body;
 
     const dataVencimento = moment(data_vencimento).local().format('YYYY-MM-DD');
-    const dataVencimentoBot = moment(data_vencimento).local().format('DD-MM-YYYY');
+    const dataVencimentoBot = moment(data_vencimento).local().format('DD/MM/YYYY');
     const [{ pix }] = await PersonalRepository.listPersonaisById(id_personal);
 
     const result = await AlunoRepository.registerAluno(
@@ -271,7 +271,7 @@ class AlunoController {
       };
     } else {
       const { data_vencimento, valor_aula } = request.body;
-      const dataVencimento = moment(data_vencimento).local().format('YYYY-MM-DD');
+      const dataVencimento = moment(data_vencimento).local().format('DD/MM/YYYY');
       dados = {
         gatilho,
         plano,

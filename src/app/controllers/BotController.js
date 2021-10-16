@@ -56,7 +56,7 @@ class BotController {
   enviaMenssagem(dados) {
     let parametros = {};
     const {
-      plano, gatilho, nome, PersonalNome, celular, pix,
+      plano, gatilho, nome, personalNome, celular, pix,
     } = dados;
 
     if (plano === 'Mensal') {
@@ -65,7 +65,7 @@ class BotController {
         gatilho,
         plano,
         nome,
-        PersonalNome,
+        personalNome,
         pix,
         celular,
         data_vencimento,
@@ -77,7 +77,7 @@ class BotController {
         gatilho,
         plano,
         nome,
-        PersonalNome,
+        personalNome,
         pix,
         celular,
         aulasDisponiveis,
