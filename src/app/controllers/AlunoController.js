@@ -4,8 +4,10 @@ const AlunoRepository = require('../repository/AlunoRepository');
 const LancamentoRepository = require('../repository/LancamentoRepository');
 const PersonalRepository = require('../repository/PersonalRepository');
 
-class AlunoController {
-  async registerAluno(request, response) {
+class AlunoController
+{
+  async registerAluno(request, response)
+  {
     const {
       id_personal,
       nome,
@@ -36,15 +38,18 @@ class AlunoController {
     response.json(result);
   }
 
-  async listByPersonalId(request, response) {
+  async listByPersonalId(request, response)
+  {
     const { id } = request.params;
 
+    // get aluno
     const result = await AlunoRepository.listByPersonalId(id);
 
     response.json(result);
   }
 
-  async listByAlunoId(request, response) {
+  async listByAlunoId(request, response)
+  {
     const { id } = request.params;
 
     const [{
@@ -56,13 +61,15 @@ class AlunoController {
     });
   }
 
-  async listAlunos(request, response) {
+  async listAlunos(request, response)
+  {
     const result = await AlunoRepository.listAlunos();
 
     response.json(result);
   }
 
-  async listAlunosTabela(request, response) {
+  async listAlunosTabela(request, response)
+  {
     const result = await AlunoRepository.listAlunosTabela();
     const resultCorrect = result.map((objeto) => (
       { ...objeto, faturamento: (objeto.aulas_feitas * objeto.valor_aula) }
@@ -71,7 +78,8 @@ class AlunoController {
     response.json(resultCorrect);
   }
 
-  async updateAlunos(request, response) {
+  async updateAlunos(request, response)
+  {
     const {
       id_personal,
       id_aluno,
@@ -105,7 +113,8 @@ class AlunoController {
     response.json(result);
   }
 
-  async deleteAluno(request, response) {
+  async deleteAluno(request, response)
+  {
     const { id } = request.params;
 
     await AlunoRepository.deleteAluno(id);
@@ -113,10 +122,12 @@ class AlunoController {
     response.sendStatus(204);
   }
 
-  async telefonesAlunosByPagamento(request, response) {
+  async telefonesAlunosByPagamento(request, response)
+  {
     const lista = await AlunoRepository.listTelefoneByStatusPagamento();
 
-    const result = lista.map((objeto) => {
+    const result = lista.map((objeto) =>
+    {
       const valorTotal = objeto.aulas_feitas * objeto.valor_aula;
       const {
         nome, celular, aulas_feitas, data_vencimento, plano, id_personal,
@@ -126,7 +137,8 @@ class AlunoController {
       };
     });
 
-    const resultFinal = await Promise.all(result.map(async (objeto) => {
+    const resultFinal = await Promise.all(result.map(async (objeto) =>
+    {
       const [result2] = await PersonalRepository.listPersonaisById(objeto.id_personal);
 
       const nomeDoPersonal = result2.nome;
@@ -136,7 +148,8 @@ class AlunoController {
     response.json(resultFinal);
   }
 
-  async filtroPorMesAlunos(request, response) {
+  async filtroPorMesAlunos(request, response)
+  {
     const { id } = request.params;
 
     const result = await LancamentoRepository.JoinLancamentoPersonal(id);
@@ -144,14 +157,16 @@ class AlunoController {
     response.json(result);
   }
 
-  async autorizarCobranca(request, response) {
+  async autorizarCobranca(request, response)
+  {
     const date = new Date(Date.now());
     date.setDate(date.getDate() + 3);
     const dataParaCobrar = moment(date).format('YYYY-MM-DD');
 
     const alunos = await AlunoRepository.cobranca(dataParaCobrar);
 
-    const listaAlunos = await Promise.all(alunos.map(async (aluno) => {
+    const listaAlunos = await Promise.all(alunos.map(async (aluno) =>
+    {
       const {
         id_aluno, id_personal, nome, data_vencimento, valor_aula, plano, aulas_feitas,
       } = aluno;
@@ -174,16 +189,19 @@ class AlunoController {
     response.json(listaAlunos);
   }
 
-  async alunoTodos(request, response) {
+  async alunoTodos(request, response)
+  {
     const result = await AlunoRepository.alunosTodos();
 
     response.json(result);
   }
 
-  async comprovantes(request, response) {
+  async comprovantes(request, response)
+  {
     const alunosPagos = await AlunoRepository.comprovantes();
 
-    const infoDePagamento = await Promise.all(alunosPagos.map(async (objeto) => {
+    const infoDePagamento = await Promise.all(alunosPagos.map(async (objeto) =>
+    {
       const { nome, celular, id_personal } = objeto;
       const [resultado] = await PersonalRepository.listPersonaisById(id_personal);
       const nomeDoPersonal = resultado.nome;
