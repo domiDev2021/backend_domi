@@ -5,7 +5,7 @@ class BotRepository {
     const query = `
     SELECT personais.nome as PersonalNome, personais.pix, alunos.*
     FROM personais
-    LEFT JOIN alunos ON domibase.alunos.celular = ?
+    LEFT JOIN alunos ON alunos.celular = ? and alunos.ativo = 1
     `;
     return new Promise((resolve, reject) => {
       db.query(query, phone, (erro, resultado) => {
@@ -18,7 +18,7 @@ class BotRepository {
   }
 
   changeAlunoComprovante(phone) {
-    const query = 'UPDATE alunos SET comprovante = 1 WHERE celular = ?';
+    const query = 'UPDATE alunos SET comprovante = 1, status_pagamento = 0 WHERE celular = ?';
     return new Promise((resolve, reject) => {
       db.query(query, phone, (erro, resultado) => {
         if (erro) {

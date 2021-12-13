@@ -27,12 +27,13 @@ router.get('/alunos/aluno/:id', AuthController.validaAcess, AlunoController.list
 router.get('/alunos', AuthController.validaAcess, AlunoController.listAlunos);
 router.put('/alunos', AuthController.validaAcess, AlunoController.updateAlunos);
 router.post('/alunos', AuthController.validaAcess, AlunoController.registerAluno);
-router.delete('/alunos/:id', AuthController.validaAcess, AlunoController.deleteAluno);
+router.get('/desliga/:id', AuthController.validaAcess, AlunoController.desligarAluno);
 router.get('/tabela', AuthController.validaAcess, AlunoController.listAlunosTabela);
 router.get('/mes/:id', AuthController.validaAcess, AlunoController.filtroPorMesAlunos);
 router.get('/cobranca', AuthController.validaAcess, AlunoController.autorizarCobranca);
 router.get('/atrasados', AuthController.validaAcess, AlunoController.telefonesAlunosByPagamento);
 router.get('/comprovantes', AuthController.validaAcess, AlunoController.comprovantes);
+router.post('/cobra', AuthController.validaAcess, AlunoController.enviarCobranca);
 
 // Lançamentos
 router.post('/lancamento/aula', AuthController.validaAcess, LancamentoController.lancaAula);

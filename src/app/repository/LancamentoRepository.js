@@ -63,7 +63,7 @@ class LancamentoRepository {
 
   JoinLancamentoPersonal(id) {
     const query = `
-      SELECT lancamentos_aulas.data_inicial, lancamentos_aulas.quantidade, alunos.nome, alunos.valor_aula
+      SELECT lancamentos_aulas.data_inicial, lancamentos_aulas.quantidade, alunos.nome, alunos.valor_aula, alunos.plano
       FROM lancamentos_aulas
       RIGHT JOIN alunos ON alunos.id_personal = ? and lancamentos_aulas.id_aluno = alunos.id_aluno
       WHERE lancamentos_aulas.quantidade IS NOT NULL

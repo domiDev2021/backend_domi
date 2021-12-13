@@ -14,7 +14,7 @@ class AlunoRepository {
   }
 
   listAlunos() {
-    const query = 'SELECT * FROM alunos';
+    const query = 'SELECT * FROM alunos WHERE ativo = 1';
     return new Promise((resolve, reject) => {
       db.query(query, (erro, resultado) => {
         if (erro) {
@@ -26,7 +26,7 @@ class AlunoRepository {
   }
 
   listAlunosTabela() {
-    const query = 'SELECT nome, plano, valor_aula, aulas_feitas, aulas_pacote, data_vencimento, status_pagamento FROM alunos';
+    const query = 'SELECT nome, plano, valor_aula, aulas_feitas, aulas_pacote, data_vencimento, status_pagamento FROM alunos WHERE ativo = 1';
     return new Promise((resolve, reject) => {
       db.query(query, (erro, resultado) => {
         if (erro) {
@@ -74,7 +74,7 @@ class AlunoRepository {
   }
 
   listByPersonalId(id) {
-    const query = 'SELECT * FROM alunos WHERE id_personal = ?';
+    const query = 'SELECT * FROM alunos WHERE id_personal = ? AND ativo = 1';
     return new Promise((resolve, reject) => {
       db.query(query, id, (erro, resultado) => {
         if (erro) {
@@ -134,7 +134,7 @@ class AlunoRepository {
   }
 
   listAlunosDevendo() {
-    const query = 'SELECT * FROM alunos WHERE status_pagamento = 0';
+    const query = 'SELECT * FROM alunos WHERE status_pagamento = 0 AND ativo = 1';
     return new Promise((resolve, reject) => {
       db.query(query, (erro, resultado) => {
         if (erro) {
@@ -146,7 +146,7 @@ class AlunoRepository {
   }
 
   listAlunosDevendoById(id) {
-    const query = 'SELECT * FROM alunos WHERE status_pagamento = 0 and id_personal = ?';
+    const query = 'SELECT * FROM alunos WHERE status_pagamento = 0 and id_personal = ? and ativo = 1';
     return new Promise((resolve, reject) => {
       db.query(query, id, (erro, resultado) => {
         if (erro) {
@@ -158,7 +158,7 @@ class AlunoRepository {
   }
 
   listTelefoneByStatusPagamento() {
-    const query = 'SELECT * FROM alunos WHERE status_pagamento = 0';
+    const query = 'SELECT * FROM alunos WHERE status_pagamento = 0 and ativo = 1';
     return new Promise((resolve, reject) => {
       db.query(query, (erro, resultado) => {
         if (erro) {
@@ -170,7 +170,7 @@ class AlunoRepository {
   }
 
   alunosTodos() {
-    const query = 'SELECT id_aluno, nome FROM alunos';
+    const query = 'SELECT id_aluno, nome FROM alunos WHERE ativo = 1';
     return new Promise((resolve, reject) => {
       db.query(query, (erro, resultado) => {
         if (erro) {
@@ -194,7 +194,7 @@ class AlunoRepository {
   }
 
   comprovantes() {
-    const query = 'SELECT * FROM alunos WHERE comprovante = 0';
+    const query = 'SELECT * FROM alunos WHERE comprovante = 1 and ativo = 1';
     return new Promise((resolve, reject) => {
       db.query(query, (erro, resultado) => {
         if (erro) {
@@ -206,7 +206,7 @@ class AlunoRepository {
   }
 
   cobranca(data) {
-    const query = 'SELECT * FROM alunos WHERE data_vencimento < ?';
+    const query = "SELECT * FROM alunos WHERE data_vencimento < ? and plano = 'Mensal' and ativo = 1";
     return new Promise((resolve, reject) => {
       db.query(query, data, (erro, resultado) => {
         if (erro) {
@@ -217,10 +217,34 @@ class AlunoRepository {
     });
   }
 
+  cobrancaQuantidade() {
+    const query = 'SELECT * FROM domibase.alunos WHERE aulas_pacote - aulas_feitas <= 1 and aulas_pacote != 0 and ativo = 1';
+    return new Promise((resolve, reject) => {
+      db.query(query, (erro, resultado) => {
+        if (erro) {
+          return reject(erro);
+        }
+        return resolve(resultado);
+      });
+    });
+  }
+
   updateDataVencimento(dados) {
-    const query = 'UPDATE alunos SET data_vencimento = ?, status_pagamento = 1 WHERE id_aluno = ?';
+    const query = 'UPDATE alunos SET data_vencimento = ?, status_pagamento = 1, aulas_feitas = 0, comprovante = 0 WHERE id_aluno = ?';
     return new Promise((resolve, reject) => {
       db.query(query, dados, (erro, resultado) => {
+        if (erro) {
+          return reject(erro);
+        }
+        return resolve(resultado);
+      });
+    });
+  }
+
+  desligarAluno(id) {
+    const query = 'UPDATE alunos SET ativo = 0 WHERE id_aluno = ?';
+    return new Promise((resolve, reject) => {
+      db.query(query, id, (erro, resultado) => {
         if (erro) {
           return reject(erro);
         }
